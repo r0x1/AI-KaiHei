@@ -1,143 +1,105 @@
 # 对后台窗口截图
-import win32gui, win32ui, win32con
-from ctypes import windll
-from PIL import Image
+import multiprocessing
+from time import sleep
+
 import cv2
 import numpy
+import win32con
+import win32gui
+import win32ui
+
+import config
 
 
-def run():
-    # 获取后台窗口的句柄，注意后台窗口不能最小化
-    hWnd = win32gui.FindWindow("Qt5QWindowIcon", "荒野乱斗 - MuMu模拟器")  # 窗口的类名可以用Visual Studio的SPY++工具获取
-    # 获取句柄窗口的大小信息
-    left, top, right, bot = win32gui.GetWindowRect(hWnd)
-    width = right - left
-    height = bot - top
-    # 返回句柄窗口的设备环境，覆盖整个窗口，包括非客户区，标题栏，菜单，边框
-    hWndDC = win32gui.GetWindowDC(hWnd)
-    # 创建设备描述表
-    mfcDC = win32ui.CreateDCFromHandle(hWndDC)
-    # 创建内存设备描述表
-    saveDC = mfcDC.CreateCompatibleDC()
-    # 创建位图对象准备保存图片
-    saveBitMap = win32ui.CreateBitmap()
-    # 为bitmap开辟存储空间
-    saveBitMap.CreateCompatibleBitmap(mfcDC, width, height)
+class DeviceProcess:
 
-    # 循环截图
-    loop(saveDC, saveBitMap, width, height, mfcDC)
+    # 持续运行标识
+    def __init__(self):
+        # 开辟进程间共享变量
+        self.active_flag = multiprocessing.Value('b', False)
+        self.process = None
+        pass
 
-    pass
+    def start_process(self):
+        # 如果进程已经存在，则先停止进程
+        if self.process is not None:
+            self.stop_process()
+            pass
+        pass
 
+        # self.process = multiprocessing.Process(target=self._func_run, args=(0, 1))
+        self.process = multiprocessing.Process(target=self._func_run_device)
+        self.process.daemon = True
+        self.process.start()
+        pass
 
-def loop(saveDC, saveBitMap, width, height, mfcDC):
-    while True:
-        # 将截图保存到saveBitMap中
-        saveDC.SelectObject(saveBitMap)
-        # 保存bitmap到内存设备描述表
-        saveDC.BitBlt((0, 0), (width, height), mfcDC, (0, 0), win32con.SRCCOPY)
+    def stop_process(self):
+        self.active_flag.value = False
+        print('device process stopping...')
 
-        signedIntsArray = saveBitMap.GetBitmapBits(True)
-        img = numpy.fromstring(signedIntsArray, dtype='uint8')
-        img.shape = (height, width, 4)
+        if self.process is not None:
+            # 等待循环退出
+            sleep(1)
+            self.process.terminate()
+            pass
+        pass
 
-        # 显示
-        cv2.imshow('image', img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
-        cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
+    def _func_run_device(self):
+        """
+        开始
+        :return:
+        """
+        self.active_flag.value = True
+        print('device process starting...')
 
-    pass
+        # 获取后台窗口的句柄，注意后台窗口不能最小化
+        # 窗口的类名可以用Visual Studio的SPY++工具获取
+        h_wnd = win32gui.FindWindow(config.game_window_class_name, config.game_window_title)
 
+        # 获取句柄窗口的大小信息
+        left, top, right, bottom = win32gui.GetWindowRect(h_wnd)
+        width = right - left
+        height = bottom - top
 
-def capture_window_image2():
-    # 获取后台窗口的句柄，注意后台窗口不能最小化
-    hWnd = win32gui.FindWindow("Qt5QWindowIcon", "荒野乱斗 - MuMu模拟器")  # 窗口的类名可以用Visual Studio的SPY++工具获取
-    # 获取句柄窗口的大小信息
-    left, top, right, bot = win32gui.GetWindowRect(hWnd)
-    width = right - left
-    height = bot - top
-    # 返回句柄窗口的设备环境，覆盖整个窗口，包括非客户区，标题栏，菜单，边框
-    hWndDC = win32gui.GetWindowDC(hWnd)
-    # 创建设备描述表
-    mfcDC = win32ui.CreateDCFromHandle(hWndDC)
-    # 创建内存设备描述表
-    saveDC = mfcDC.CreateCompatibleDC()
-    # 创建位图对象准备保存图片
-    saveBitMap = win32ui.CreateBitmap()
-    # 为bitmap开辟存储空间
-    saveBitMap.CreateCompatibleBitmap(mfcDC, width, height)
-    # 将截图保存到saveBitMap中
-    saveDC.SelectObject(saveBitMap)
-    # 保存bitmap到内存设备描述表
-    saveDC.BitBlt((0, 0), (width, height), mfcDC, (0, 0), win32con.SRCCOPY)
+        # 返回句柄窗口的设备环境，覆盖整个窗口，包括非客户区，标题栏，菜单，边框
+        h_wnd_dc = win32gui.GetWindowDC(h_wnd)
+        # 创建设备描述表
+        mfc_dc = win32ui.CreateDCFromHandle(h_wnd_dc)
+        # 创建内存设备描述表
+        save_dc = mfc_dc.CreateCompatibleDC()
+        # 创建位图对象准备保存图片
+        save_bitmap = win32ui.CreateBitmap()
+        # 为bitmap开辟存储空间
+        save_bitmap.CreateCompatibleBitmap(mfc_dc, width, height)
 
-    signedIntsArray = saveBitMap.GetBitmapBits(True)
-    img = numpy.fromstring(signedIntsArray, dtype='uint8')
-    img.shape = (height, width, 4)
+        # 循环截图
+        self._func_loop_screen(save_dc, save_bitmap, width, height, mfc_dc)
 
-    # 显示
-    cv2.imshow('image', img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
-    cv2.waitKey(1)  # 表示程序会无限制的等待用户的按键事件
-    # cv2.destroyAllWindows()
+        # 释放cv2
+        cv2.destroyWindow(config.cv2_window_title)
 
-    mfcDC.DeleteDC()
-    saveDC.DeleteDC()
-    win32gui.ReleaseDC(hWnd, hWndDC)
-    win32gui.DeleteObject(saveBitMap.GetHandle())
+        # 释放资源
+        mfc_dc.DeleteDC()
+        save_dc.DeleteDC()
+        win32gui.ReleaseDC(h_wnd, h_wnd_dc)
+        win32gui.DeleteObject(save_bitmap.GetHandle())
 
-    # 如果要截图到打印设备：
-    # 最后一个int参数：0-保存整个窗口，1-只保存客户区。如果PrintWindow成功函数返回值为1
-    # result = windll.user32.PrintWindow(hWnd, saveDC.GetSafeHdc(), 0)
-    # print(result)  # PrintWindow成功则输出1
+        print('device process terminated.')
+        pass
 
-    # 保存图像
-    # 方法一：windows api保存
-    # 保存bitmap到文件
-    # saveBitMap.SaveBitmapFile(saveDC, ".\\img_Winapi.bmp")
+    def _func_loop_screen(self, save_dc, save_bitmap, width, height, mfc_dc):
+        # 判断 进程间共享变量 是否为 True
+        while self.active_flag.value:
+            # 将截图保存到saveBitMap中
+            save_dc.SelectObject(save_bitmap)
+            # 保存bitmap到内存设备描述表
+            save_dc.BitBlt((0, 0), (width, height), mfc_dc, (0, 0), win32con.SRCCOPY)
 
+            signed_ints_array = save_bitmap.GetBitmapBits(True)
+            img = numpy.fromstring(signed_ints_array, dtype='uint8')
+            img.shape = (height, width, 4)
 
-def save_window_image1():
-    # 获取后台窗口的句柄，注意后台窗口不能最小化
-    hWnd = win32gui.FindWindow("Qt5QWindowIcon", "荒野乱斗 - MuMu模拟器")  # 窗口的类名可以用Visual Studio的SPY++工具获取
-    # 获取句柄窗口的大小信息
-    left, top, right, bot = win32gui.GetWindowRect(hWnd)
-    width = right - left
-    height = bot - top
-    # 返回句柄窗口的设备环境，覆盖整个窗口，包括非客户区，标题栏，菜单，边框
-    hWndDC = win32gui.GetWindowDC(hWnd)
-    # 创建设备描述表
-    mfcDC = win32ui.CreateDCFromHandle(hWndDC)
-    # 创建内存设备描述表
-    saveDC = mfcDC.CreateCompatibleDC()
-    # 创建位图对象准备保存图片
-    saveBitMap = win32ui.CreateBitmap()
-    # 为bitmap开辟存储空间
-    saveBitMap.CreateCompatibleBitmap(mfcDC, width, height)
-    # 将截图保存到saveBitMap中
-    saveDC.SelectObject(saveBitMap)
-    # 保存bitmap到内存设备描述表
-    saveDC.BitBlt((0, 0), (width, height), mfcDC, (0, 0), win32con.SRCCOPY)
-
-    # 如果要截图到打印设备：
-    # 最后一个int参数：0-保存整个窗口，1-只保存客户区。如果PrintWindow成功函数返回值为1
-    result = windll.user32.PrintWindow(hWnd, saveDC.GetSafeHdc(), 0)
-    print(result)  # PrintWindow成功则输出1
-
-    # 保存图像
-    # 方法一：windows api保存
-    # 保存bitmap到文件
-    saveBitMap.SaveBitmapFile(saveDC, ".\\img_Winapi.bmp")
-
-
-def loop_hwnd():
-    hwnd_title = dict()
-
-    def get_all_hwnd(hwnd, mouse):
-        if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) and win32gui.IsWindowVisible(hwnd):
-            hwnd_title.update({hwnd: win32gui.GetWindowText(hwnd)})
-
-    win32gui.EnumWindows(get_all_hwnd, 0)
-
-    for h, t in hwnd_title.items():
-        if t is not "":
-            print(h, t)
-    pass
+            # 显示
+            cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
+            cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
+        pass
