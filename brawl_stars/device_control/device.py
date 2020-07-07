@@ -99,6 +99,8 @@ class DeviceProcess:
             img = numpy.fromstring(signed_ints_array, dtype='uint8')
             img.shape = (height, width, 4)
 
+            # 调用yolo5检测图片
+
             # 显示
             cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
             cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件

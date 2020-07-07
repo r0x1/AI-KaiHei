@@ -64,5 +64,5 @@ with open('./models/air_force_r_yolov5s.yaml', 'w') as f:
 print('custom model config written!')
 
 # cd /content/yolov5/
-# python train.py --img 416 --batch 16 --epochs 100 --data '../data.yaml' --cfg ./models/air_force_r_yolov5s.yaml --weights '' --name yolov5s_results --nosave --cache
+# python train.py --img 416 --batch 16 --epochs 100 --data '../data.yaml' --cfg ./models/brawl_starts.yaml --weights '' --name yolov5s_results --nosave --cache
 pass

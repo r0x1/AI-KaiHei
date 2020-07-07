@@ -1,1 +1,0 @@
-# python detect.py --weights weights\air_force_r.pt --img 1088 --conf 0.4 --source content\test\images\
