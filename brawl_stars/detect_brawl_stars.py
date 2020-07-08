@@ -1,0 +1,1 @@
+# python detect.py --weights weights\brawl_stars.pt --img 1088 --conf 0.4 --source content\test\images\

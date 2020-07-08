@@ -1,16 +1,12 @@
-import multiprocessing
-from time import sleep
-
 import cv2
 import numpy
 import win32con
 import win32gui
 import win32ui
-
-import config
-
 import multiprocessing
 from time import sleep
+
+from brawl_stars import config
 
 
 class BattleObservationProcess:
@@ -102,9 +98,19 @@ class BattleObservationProcess:
             img = numpy.fromstring(signed_ints_array, dtype='uint8')
             img.shape = (height, width, 4)
 
+            # 显示
+            # cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
+            # cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
+
+            # [battle_observation]进程，循环读取游戏图片，
             # 调用yolo5检测图片
 
-            # 显示
-            cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
-            cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
+            # [battle_observation]进程，调用[物体检测]功能，对图片进行检测，返回物体信息list，
+
+            # [battle_observation]进程，调用[战斗思考]功能，对物体信息list进行分析，
+
+            # [battle_observation]进程，启动[hero_movement]进程，由[hero_movement]进程，调用[device_control]功能，实现移动功能。
+
+            # [battle_observation]进程，启动[hero_attack]进程，由[hero_attack]进程，调用[device_control]功能，实现攻击功能。
+
         pass
