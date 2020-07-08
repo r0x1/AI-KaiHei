@@ -7,18 +7,24 @@
 
 项目英文名称：AI Kai Hei
 
-项目方向：人工智能 开黑 游戏队友
+项目方向：人工智能 游戏队友
 
-短期目标：用 人工智能 玩荒野乱斗游戏 和 自己开黑
-
-运行环境：项目运行在windows10上，android模拟器 + windows 10
+短期目标：用 人工智能 玩荒野乱斗 [双人荒野决斗] 模式 和 自己开黑
 
 
-## 开发环境配置
+## 运行环境
 
-- [x] 1、开发环境：cuda、opencv、pycharm、pytorch、labelImg。
+- windows10，网易MuMu模拟器
 
-- [x] 2、运行环境：android模拟器、虚拟摇杆配置、荒野乱斗游戏。
+- 下载安装 python 3.7.7：```https://www.python.org/ftp/python/3.7.7/python-3.7.7-amd64.exe```
+
+- 终端安装 pip 20.1.1：```$ python -m pip install --upgrade pip```
+
+- 下载安装 cuda 10.1：```https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_10.1.105_418.96_win10.exe```
+
+- 终端安装 pytorch 1.5.1：```$ pip install torch==1.5.1+cu101 torchvision==0.6.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html```
+
+- 终端安装 依赖软件包：```$ pip install -r requirements.txt```
 
 
 ## 功能模块
