@@ -1,9 +1,9 @@
 import argparse
 import json
 
-from brawl_stars.object_detection.yolov5.utils import google_utils
-from brawl_stars.object_detection.yolov5.utils.datasets import *
-from brawl_stars.object_detection.yolov5.utils.utils import *
+from brawl_stars.yolov5.utils import google_utils
+from brawl_stars.yolov5.utils.datasets import *
+from brawl_stars.yolov5.utils.utils import *
 
 
 def test(data,

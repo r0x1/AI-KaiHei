@@ -7,7 +7,7 @@ print('Setup complete. Using torch %s %s' % (
 # print(torch.cuda.current_device())
 
 # define number of classes based on YAML
-with open("./content/data.yaml", 'r') as stream:
+with open("content/data.yaml", 'r') as stream:
     num_classes = str(yaml.safe_load(stream)['nc'])
     pass
 pass

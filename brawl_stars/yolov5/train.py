@@ -8,10 +8,10 @@ import torch.utils.data
 from torch.utils.tensorboard import SummaryWriter
 
 import test  # import test.py to get mAP after each epoch
-from brawl_stars.object_detection.yolov5.models.yolo import Model
-from brawl_stars.object_detection.yolov5.utils import google_utils
-from brawl_stars.object_detection.yolov5.utils.datasets import *
-from brawl_stars.object_detection.yolov5.utils.utils import *
+from brawl_stars.yolov5.models import Model
+from brawl_stars.yolov5.utils import google_utils
+from brawl_stars.yolov5.utils.datasets import *
+from brawl_stars.yolov5.utils.utils import *
 
 mixed_precision = True
 try:  # Mixed precision training https://github.com/NVIDIA/apex

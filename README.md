@@ -23,36 +23,36 @@
 
 ## 功能模块
 
-- [游戏控制]：game_control，负责调用所有的进程，负责游戏菜单操作，开始战斗，结束战斗等。
+- [game_control]：游戏控制，负责调用所有的进程，负责游戏菜单操作，开始战斗，结束战斗等。
 
-- [战斗观察]：battle_observation，负责调用[物体检测]、[战斗思考]、[英雄移动]、[战斗观察]。
+- [battle_observation]：战斗观察，负责从屏幕"截取图片"、调用[object_detection]、[battle_thinking]、[hero_movement]、[hero_attack]。
 
-- [设备控制]：device_control，负责从屏幕截图、模拟键盘输入、模拟鼠标输入。
+- [object_detection]：物体检测，负责调用yolo5检测图片中的物体。
 
-- [物体检测]：object_detection，负责调用神经网络检测图片中的物体。
+- [battle_thinking]：战斗思考，负责分析物体信息，调用[hero_movement]、[hero_attack]
 
-- [战斗思考]：battle_thinking，负责分析物体，调用[英雄移动]、[英雄攻击]
+- [hero_movement]：英雄移动，控制英雄持续性的走位，即使没有任何指令，也要一直移动，保持apm节奏。
 
-- [英雄移动]：hero_movement，负责调用[设备控制]，控制英雄持续性的走位，即使没有任何指令，也要一直移动，保持apm节奏。
+- [hero_attack]：英雄攻击，控制英雄持续性的攻击，即使没有任何指令，也要一直调整攻击方向，保持apm节奏。
 
-- [英雄攻击]：hero_attack，负责调用[设备控制]，控制英雄持续性的攻击，即使没有任何指令，也要一直调整攻击方向，保持apm节奏。
+- [device_control]：设备控制，负责向模拟器发送消息，用于模拟键盘输入、模拟鼠标输入。
 
 
 ## 整体流程
 
-- 启动[游戏控制]进程：负责调用所有的进程，进行工作。负责开始游戏，结束游戏等菜单操作。
+- 启动[game_control]进程：负责调用所有的进程，进行工作。负责开始游戏，结束游戏等菜单操作。
 
-- 由[游戏控制]进程，启动[战斗观察]进程。
+- 由[game_control]进程，启动[battle_observation]进程，
 
-    - 由[战斗观察]进程，调用[设备控制]功能，读取一张游戏图片，读取图片之后，
+- [battle_observation]进程，循环读取游戏图片，
 
-    - 由[战斗观察]进程，调用[物体检测]功能，对图片进行检测，返回物体信息list，
+- [battle_observation]进程，调用[物体检测]功能，对图片进行检测，返回物体信息list，
 
-    - 由[战斗观察]进程，调用[战斗思考]功能，对物体信息list进行分析，分析之后，
+- [battle_observation]进程，调用[战斗思考]功能，对物体信息list进行分析，
 
-- 由[战斗观察]进程，启动[英雄移动]进程，由[英雄移动]进程，调用[设备控制]功能，实现移动功能。
+- [battle_observation]进程，启动[hero_movement]进程，由[hero_movement]进程，调用[device_control]功能，实现移动功能。
 
-- 由[战斗观察]进程，启动[英雄攻击]进程，由[英雄攻击]进程，调用[设备控制]功能，实现攻击功能。
+- [battle_observation]进程，启动[hero_attack]进程，由[hero_attack]进程，调用[device_control]功能，实现攻击功能。
 
 
 ## 移动和攻击举例 

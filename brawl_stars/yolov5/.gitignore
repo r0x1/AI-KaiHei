@@ -25,7 +25,7 @@
 
 storage.googleapis.com
 runs/*
-data/*
+data/get_coco2017.sh
 !data/samples/zidane.jpg
 !data/samples/bus.jpg
 !data/coco.names

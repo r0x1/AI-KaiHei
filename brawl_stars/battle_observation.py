@@ -1,4 +1,3 @@
-# 对后台窗口截图
 import multiprocessing
 from time import sleep
 
@@ -10,8 +9,11 @@ import win32ui
 
 import config
 
+import multiprocessing
+from time import sleep
 
-class DeviceProcess:
+
+class BattleObservationProcess:
 
     # 持续运行标识
     def __init__(self):
@@ -27,15 +29,17 @@ class DeviceProcess:
             pass
         pass
 
+        self.active_flag.value = True
+
         # self.process = multiprocessing.Process(target=self._func_run, args=(0, 1))
-        self.process = multiprocessing.Process(target=self._func_run_device)
-        self.process.daemon = True
+        self.process = multiprocessing.Process(target=self._run_battle_observation)
+        # self.process.daemon = True
         self.process.start()
         pass
 
     def stop_process(self):
         self.active_flag.value = False
-        print('device process stopping...')
+        print('battle observation process stopping...')
 
         if self.process is not None:
             # 等待循环退出
@@ -44,13 +48,12 @@ class DeviceProcess:
             pass
         pass
 
-    def _func_run_device(self):
+    def _run_battle_observation(self):
         """
         开始
         :return:
         """
-        self.active_flag.value = True
-        print('device process starting...')
+        print('battle observation process starting...')
 
         # 获取后台窗口的句柄，注意后台窗口不能最小化
         # 窗口的类名可以用Visual Studio的SPY++工具获取
@@ -73,7 +76,7 @@ class DeviceProcess:
         save_bitmap.CreateCompatibleBitmap(mfc_dc, width, height)
 
         # 循环截图
-        self._func_loop_screen(save_dc, save_bitmap, width, height, mfc_dc)
+        self._loop_screen(save_dc, save_bitmap, width, height, mfc_dc)
 
         # 释放cv2
         cv2.destroyWindow(config.cv2_window_title)
@@ -84,10 +87,10 @@ class DeviceProcess:
         win32gui.ReleaseDC(h_wnd, h_wnd_dc)
         win32gui.DeleteObject(save_bitmap.GetHandle())
 
-        print('device process terminated.')
+        print('battle observation process terminated.')
         pass
 
-    def _func_loop_screen(self, save_dc, save_bitmap, width, height, mfc_dc):
+    def _loop_screen(self, save_dc, save_bitmap, width, height, mfc_dc):
         # 判断 进程间共享变量 是否为 True
         while self.active_flag.value:
             # 将截图保存到saveBitMap中

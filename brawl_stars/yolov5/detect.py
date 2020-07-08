@@ -3,10 +3,9 @@ import platform
 
 import torch.backends.cudnn as cudnn
 
-from brawl_stars.object_detect.yolov5.utils import google_utils, torch_utils
-from brawl_stars.object_detect.yolov5.utils.datasets import *
-from brawl_stars.object_detect.yolov5.utils import *
-from brawl_stars.object_detect.yolov5.utils.utils import check_img_size, plot_one_box, scale_coords, apply_classifier, \
+from brawl_stars.yolov5.utils import google_utils, torch_utils
+from brawl_stars.yolov5.utils.datasets import *
+from brawl_stars.yolov5.utils.utils import check_img_size, plot_one_box, scale_coords, apply_classifier, \
     non_max_suppression
 
 
