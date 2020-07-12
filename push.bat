@@ -20,7 +20,7 @@ git pull
 
 echo "#################### git commit -m \"tiny update\" ####################"
 
-git commit -m "a little"
+git commit -m "tiny update"
 
 
 
