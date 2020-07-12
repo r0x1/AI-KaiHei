@@ -18,7 +18,7 @@ git pull
 
 
 
-echo "#################### git commit -m \"a little\" ####################"
+echo "#################### git commit -m \"tiny update\" ####################"
 
 git commit -m "a little"
 
