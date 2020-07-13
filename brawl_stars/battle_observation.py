@@ -7,6 +7,7 @@ import multiprocessing
 from time import sleep
 
 from brawl_stars import config
+from brawl_stars.object_detection import ObjectDetection
 
 
 class BattleObservationProcess:
@@ -87,6 +88,10 @@ class BattleObservationProcess:
         pass
 
     def _loop_screen(self, save_dc, save_bitmap, width, height, mfc_dc):
+        # 实例化ObjectDetection
+        obj_detect = ObjectDetection(weights='..\\weights\\brawl_stars_enemy_and_teammate.pt', imgsz=1920,
+                                     confidence=0.4)
+
         # 判断 进程间共享变量 是否为 True
         while self.active_flag.value:
             # 将截图保存到saveBitMap中
@@ -97,6 +102,7 @@ class BattleObservationProcess:
             signed_ints_array = save_bitmap.GetBitmapBits(True)
             img = numpy.fromstring(signed_ints_array, dtype='uint8')
             img.shape = (height, width, 4)
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
 
             # 显示
             # cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
@@ -105,9 +111,21 @@ class BattleObservationProcess:
             # [battle_observation]进程，循环读取游戏图片，
             # 调用yolo5检测图片
 
-            # [battle_observation]进程，调用[物体检测]功能，对图片进行检测，返回物体信息list，
+            # img1 = cv2.imread('C:\\workspace\\test_video\\temp_img\\RPReplay_Final1594510234_339.png')  # BGR
 
-            # [battle_observation]进程，调用[战斗思考]功能，对物体信息list进行分析，
+            # [battle_observation]进程，调用object_detection功能，对图片进行检测，返回物体信息list，
+            list_detect, img = obj_detect.detect(img, draw_box=True)
+
+            if len(list_detect) > 0:
+                print(list_detect)
+            pass
+
+            # 画框
+            # 显示预览
+            cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
+            cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
+
+            # [battle_observation]进程，调用battle_thinking功能，对物体信息list进行分析，
 
             # [battle_observation]进程，启动[hero_movement]进程，由[hero_movement]进程，调用[device_control]功能，实现移动功能。
 
