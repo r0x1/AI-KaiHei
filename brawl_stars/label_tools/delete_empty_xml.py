@@ -2,7 +2,7 @@ import os
 import subprocess
 
 # 输入的图片文件目录
-origin_image_folder = 'C:\\workspace\\test_video\\images\\'
+origin_image_folder = 'C:\\workspace\\test_video\\images_20200716\\'
 
 # 遍历视频文件的目录
 files = os.listdir(origin_image_folder)
@@ -28,6 +28,8 @@ for xml_file_name in files:
             subp = subprocess.Popen(str_cmd, shell=True)
             subp.wait()
             subp.terminate()
+
+            print(str_cmd)
 
             # 删除图片文件
             # image_file_name = xml_file_name[0:xml_file_name.index('.xml')] + '.png'
