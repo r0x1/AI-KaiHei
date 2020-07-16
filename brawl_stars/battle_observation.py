@@ -1,5 +1,3 @@
-import time
-
 import cv2
 import numpy
 import win32con
@@ -123,14 +121,31 @@ class BattleObservationProcess:
             pass
 
             # 画框
-            # 显示预览
-            cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
-            key = cv2.waitKey(1000)  # 0 表示程序会无限制的等待用户的按键事件
+            # cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
+            # key = cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
 
-            if key is 32:
-                cv2.imwrite(str(time.time()) + '.png', img)
+            # 显示预览
+            cv2.namedWindow(config.cv2_window_title, flags=cv2.WND_PROP_FULLSCREEN)
+            # cv2.moveWindow(config.cv2_window_title, screen.x - 1, screen.y - 1)
+            cv2.setWindowProperty(config.cv2_window_title, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+            cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
+            key = cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
+
+            if key is not -1:
+                print(key)
+
+                if key is 113:
+                    # q 键 退出
+                    self.active_flag.value = False
+                    pass
                 pass
             pass
+
+            # if key is 32:
+            #     cv2.imwrite(str(time.time()) + '.png', img)
+            #     pass
+            # pass
 
             # if key is not -1:
             #     print(key)

@@ -128,8 +128,8 @@ if __name__ == "__main__":
     str_filename = 'RPReplay_Final1594286214_102.png'
     str_path = 'C:\\workspace\\test_video\\temp_img\\RPReplay_Final1594286214_102.png'
 
-    str_width = '1920'
-    str_height = '1080'
+    # str_width = '1920'
+    # str_height = '1080'
 
     str_xml_file = get_labelimg_xml_string(folder=str_folder, filename=str_filename, path=str_path,
                                            object_list=list_objects)
