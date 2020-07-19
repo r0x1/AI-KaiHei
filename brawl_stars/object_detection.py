@@ -77,16 +77,7 @@ class ObjectDetection:
 
         # Process detections
         for i, det in enumerate(pred):  # detections per image
-            # if webcam:  # batch_size >= 1
-            #     p, s, im0 = path[i], '%g: ' % i, im0s[i].copy()
-            # else:
-            #     p, s, im0 = path, '', im0s
-            # image_input = image_input
             s = ''
-
-            # save_path = str(Path(out) / Path(p).name)
-            # txt_path = str(Path(out) / Path(p).stem) + ('_%g' % dataset.frame if dataset.mode == 'video' else '')
-            # s += '%gx%g ' % img.shape[2:]  # print string
 
             # gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             if det is not None and len(det):
@@ -110,7 +101,7 @@ class ObjectDetection:
                     # 置信度
                     conf = round(float(conf), 4)
                     # 保存到list
-                    result_list.append((x1, y1, x2, y2, cls_name, conf))
+                    result_list.append((cls_name, conf, x1, y1, x2, y2))
 
                     # if save_txt:  # Write to file
                     #     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh

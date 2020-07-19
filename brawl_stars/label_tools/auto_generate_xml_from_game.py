@@ -84,7 +84,7 @@ def _loop_screen(save_dc, save_bitmap, width, height, mfc_dc):
             # 检测到的物体列表
             list_objects = []
 
-            for (x1, y1, x2, y2, cls_name, conf) in list_detect:
+            for (cls_name, conf, x1, y1, x2, y2) in list_detect:
                 # 检测到一个物体
                 # name='enemy', xmin='1192', ymin='205', xmax='1319', ymax='369'),
                 dict1 = {'name': str(cls_name), 'xmin': str(x1), 'ymin': str(y1), 'xmax': str(x2), 'ymax': str(y2)}
