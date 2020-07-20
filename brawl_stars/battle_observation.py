@@ -104,40 +104,35 @@ class BattleObservationProcess:
             img.shape = (height, width, 4)
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
 
-            # 显示
-            # cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
-            # cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
-
-            # [battle_observation]进程，循环读取游戏图片，
-            # 调用yolo5检测图片
-
-            # img1 = cv2.imread('C:\\workspace\\test_video\\temp_img\\RPReplay_Final1594510234_339.png')  # BGR
-
             # [battle_observation]进程，调用object_detection功能，对图片进行检测，返回物体信息list，
-            list_detect, img = obj_detect.detect(img, draw_box=True)
+            # 如果显示预览窗体，则 画框
+            list_detect, img = obj_detect.detect(img, draw_box=config.display_preview_screen)
 
             if len(list_detect) > 0:
                 print(list_detect)
             pass
 
-            # 画框
-            # cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
-            # key = cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
+            # 是否显示游戏预览
+            if config.display_preview_screen:
+                # 全屏显示游戏画面
+                if config.preview_full_screen:
+                    cv2.namedWindow(config.cv2_window_title, flags=cv2.WND_PROP_FULLSCREEN)
+                    # cv2.moveWindow(config.cv2_window_title, screen.x - 1, screen.y - 1)
+                    cv2.setWindowProperty(config.cv2_window_title, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                pass
 
-            # 显示预览
-            cv2.namedWindow(config.cv2_window_title, flags=cv2.WND_PROP_FULLSCREEN)
-            # cv2.moveWindow(config.cv2_window_title, screen.x - 1, screen.y - 1)
-            cv2.setWindowProperty(config.cv2_window_title, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                # 在指定窗口中，显示图片
+                cv2.imshow(config.cv2_window_title, img)
+                # 0 表示程序会无限制的等待用户的按键事件
+                key = cv2.waitKey(1)
 
-            cv2.imshow(config.cv2_window_title, img)  # 第一个参数是窗口名称，是字符串。第二个参数是我们的图片
-            key = cv2.waitKey(1)  # 0 表示程序会无限制的等待用户的按键事件
+                if key is not -1:
+                    print(key)
 
-            if key is not -1:
-                print(key)
-
-                if key is 113:
-                    # q 键 退出
-                    self.active_flag.value = False
+                    if key is 113:
+                        # q 键 退出
+                        self.active_flag.value = False
+                        pass
                     pass
                 pass
             pass
