@@ -1,16 +1,32 @@
 import numpy as np
+from past.builtins import xrange
 
+from brawl_stars import config
 from brawl_stars.astar import Astar
+
+
+def resize(array_in, shape=None):
+    if shape is None:
+        return array_in
+    m, n = shape
+    Y = np.zeros((m, n), dtype=type(array_in[0, 0]))
+    k = len(array_in)
+    p, q = k / m, k / n
+    for i in xrange(m):
+        Y[i, :] = array_in[np.int_(i * p), np.int_(np.arange(n) * q)]
+    return Y
+
 
 if __name__ == "__main__":
     list_obstacle = []
 
-    cls_name_1 = 'enemy'
+    # 假设 砖块
+    cls_name_1 = 'brick'
     conf_1 = 0.7008
-    x1_1 = 1
-    y1_1 = 2
-    x2_1 = 3
-    y2_1 = 4
+    x1_1 = 100
+    y1_1 = 200
+    x2_1 = 500
+    y2_1 = 700
     list_obstacle.append((cls_name_1, conf_1, x1_1, y1_1, x2_1, y2_1))
 
     array_map = np.zeros([1080, 1920], dtype=np.int)
@@ -20,21 +36,11 @@ if __name__ == "__main__":
         array_map[y1:y2, x1:x2, ...] = 5
         pass
 
-    mat = array_map.tolist()
+    resized_cells_array = resize(array_map, [config.screen_row_count, config.screen_column_count])
 
-    # mat = [
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    # ]
+    list_cells = resized_cells_array.tolist()
 
-    astar = Astar(mat)
-    result = astar.run([0, 0], [10, 9])
+    astar = Astar(list_cells)
+    result = astar.run([1, 1], [29, 15])
     print(result)
+

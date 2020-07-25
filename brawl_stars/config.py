@@ -9,10 +9,10 @@ game_window_class_name = 'Qt5QWindowIcon'
 cv2_window_title = 'AI-KaiHei'
 
 # 显示游戏预览画面
-display_preview_screen = False
+display_preview_screen = True
 
 # 全屏显示预览画面
-preview_full_screen = False
+preview_full_screen = True
 
 # 屏幕宽度
 screen_width = 1920
