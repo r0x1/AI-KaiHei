@@ -16,21 +16,49 @@
 > 在 brawl_stars 目录中
 
 
-## 运行环境
+## 如何运行
 
-- windows10，网易MuMu模拟器
+> windows 10 系统
 
-- 下载安装 python 3.7.7：```https://www.python.org/ftp/python/3.7.7/python-3.7.7-amd64.exe```
+1. 获取代码
 
-- 终端安装 pip 20.1.1：```$ python -m pip install --upgrade pip```
+    下载解压 ```https://github.com/r0x1/AI-KaiHei/archive/master.zip``` 到 ```AI-KaiHei``` 目录，或者 命令行执行 ```git clone --depth 1  https://github.com/r0x1/AI-KaiHei.git```
 
-- 下载安装 cuda 10.1：```https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_10.1.105_418.96_win10.exe```
+2. 安装Android模拟器
 
-- 终端安装 pytorch 1.5.1：```$ pip install torch==1.5.1+cu101 torchvision==0.6.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html```
+    推荐安装 网易MuMu模拟器，请自行百度。
 
-- 终端安装 依赖软件包：```$ pip install -r requirements.txt```
+3. 安装 python 3.7.8
 
-- 运行程序：```$ python ./brawl_stars/main.py```
+    下载安装 python 3.7.8：```https://www.python.org/ftp/python/3.7.8/python-3.7.8-amd64.exe```
+
+4. 安装 pip 20.1.1
+
+    命令行执行：```$ python -m pip install --upgrade pip```
+
+5. 安装 cuda 10.2
+
+    下载安装：```http://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_441.22_win10.exe```
+
+6. 安装 pytorch 1.5.1
+
+    命令行执行：```$ pip install torch===1.5.1 torchvision===0.6.1 -f https://download.pytorch.org/whl/torch_stable.html```
+
+7. 安装依赖软件包
+
+    命令行执行 ：```$ pip install -r requirements.txt```
+
+8. 进入工作目录
+
+    命令行执行：```$ cd AI-KaiHei\brawl_stars```
+
+9. 启动主程序
+
+    在```AI-KaiHei\brawl_stars```目录下，例如```D:\workspace\AI-KaiHei\brawl_stars>```，运行 ```$ python main.py```
+
+10. 启动AI进程
+
+    在命令行中，根据提示，输入 数字 1 回车。
 
 
 ## 功能模块

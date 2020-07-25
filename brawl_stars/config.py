@@ -12,7 +12,7 @@ cv2_window_title = 'AI-KaiHei'
 display_preview_screen = True
 
 # 全屏显示预览画面
-preview_full_screen = True
+preview_full_screen = False
 
 # 屏幕宽度
 screen_width = 1920
