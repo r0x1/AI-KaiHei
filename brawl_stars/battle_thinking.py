@@ -3,6 +3,10 @@ from enum import Enum
 
 
 # 方向，参照数字九宫键盘
+from brawl_stars import config
+from brawl_stars.astar import resize, Astar
+
+
 class Direction(Enum):
     # 中心
     center = 5
@@ -78,41 +82,81 @@ class BattleThinking:
         self._list_toxic_fog = []
         # 地图边界信息列表
         self._list_map_boundary = []
+        # 障碍物
+        self._list_obstacle = []
 
         pass
 
-    def _hero_path_finding(self, x, y):
+    def _hero_path_finding(self, target_x, target_y):
         """
         英雄寻路
-        :param x: 目的地 x
-        :param y: 目的地 y
+        :param target_x: 目的地 x
+        :param target_y: 目的地 y
         :return: 下一步移动的方向 Direction
         """
-        # 7、向攻击目标移动的寻路。
-        # （1）屏幕图片为[x,y,z]，[1080,1920,1]，本例中，矩阵计算，英雄自身设置为值z=11，目的地设置为值z=15，
-        # 障碍物设置为z=0，其余区域（地面、草地）设置为z=1，不看z=0的部分，得到矩阵中只有 z=1、z=11、z=15。
-        # 凡是z>=1 的区域，都是可以通行的路径，从这个区域，由 z=11 区域 逐步到达 z=15 的区域。
-        # （2）以数字小键盘为例，计算方位。假设 箱子 在方位1，即 左下角，则优先根据z=1和z=11矩阵，向左下角移动，如遇障碍，优先向左下移动，直至到达z=15。
-        # （3）本例中，为了向方位1移动，英雄移动方向的优先级为：1>2>4>3>7>8>6>9。
+        array_map = np.zeros([config.screen_heigh, config.screen_width], dtype=np.int)
 
-        list_obstacle = [self._list_brick, self._list_tombstone, self._list_stump,
-                         self._list_water, self._list_map_boundary]
+        list_obstacle = []
+        list_obstacle += self._list_brick
+        list_obstacle += self._list_tombstone
+        list_obstacle += self._list_stump
+        list_obstacle += self._list_water
 
-        array_map = np.ones([1080, 1920, 1], dtype=np.int)
+        # # 假设 砖块
+        # cls_name_1 = 'brick'
+        # conf_1 = 0.7008
+        # x1_1 = 100
+        # y1_1 = 200
+        # x2_1 = 400
+        # y2_1 = 700
+        # list_obstacle.append((cls_name_1, conf_1, x1_1, y1_1, x2_1, y2_1))
+        #
+        # # 假设 水
+        # cls_name_2 = 'water'
+        # conf_2 = 0.7008
+        # x1_2 = 700
+        # y1_2 = 500
+        # x2_2 = 900
+        # y2_2 = 1080
+        # list_obstacle.append((cls_name_2, conf_2, x1_2, y1_2, x2_2, y2_2))
 
+        # 根据list中的信息，填充障碍物到 array_map
         for (_, _, x1, y1, x2, y2) in list_obstacle:
-            # 根据list中的信息，填充障碍物到 array_map
-            array_map[y1:y2, x1:x2, ...] = 0
+            array_map[y1:y2, x1:x2, ...] = 99
             pass
 
-        # 英雄 周围 z=1的位置
+        resized_cells_array = resize(array_map, [config.screen_row_count, config.screen_column_count])
 
+        list_cells = resized_cells_array.tolist()
 
+        astar = Astar(list_cells)
 
-        pass
+        steps_list = astar.run([self._hero_center_x, self._hero_center_y], [target_x, target_y])
+
+        # 绘制，显示
+        # for (x, y) in result:
+        #     # print(x)
+        #     # print(y)
+        #     resized_cells_array[y, x] = 1
+        #     pass
+        # print(resized_cells_array)
+
+        return steps_list
 
     # 对物体列表进行分析，返回思考结果
     def process_all(self):
+
+        # 返回结果，移动方向
+        result_move_direction = None
+        # 返回结果，移动距离，身位
+        result_move_distance = None
+
+        # 返回结果，攻击方式，平A/大招/道具
+        result_attack_type = None
+
+        # 返回结果，攻击方向
+        result_attack_direction = None
+
         # 由battle_observation 传递来的检测到到物体的 list
         objects_list = []
         # 模拟数据
@@ -147,17 +191,24 @@ class BattleThinking:
             elif cls_name == ObjectType.green_gift.name:
                 self._list_green_gift.append(object_one_item)
                 pass
-            elif cls_name == ObjectType.brick.name:
-                self._list_brick.append(object_one_item)
-                pass
-            elif cls_name == ObjectType.tombstone.name:
-                self._list_tombstone.append(object_one_item)
-                pass
-            elif cls_name == ObjectType.stump.name:
-                self._list_stump.append(object_one_item)
-                pass
-            elif cls_name == ObjectType.water.name:
-                self._list_water.append(object_one_item)
+            # 将4种障碍物合并到一起
+            # elif cls_name == ObjectType.brick.name:
+            #     self._list_brick.append(object_one_item)
+            #     pass
+            # elif cls_name == ObjectType.tombstone.name:
+            #     self._list_tombstone.append(object_one_item)
+            #     pass
+            # elif cls_name == ObjectType.stump.name:
+            #     self._list_stump.append(object_one_item)
+            #     pass
+            # elif cls_name == ObjectType.water.name:
+            #     self._list_water.append(object_one_item)
+            #     pass
+            elif cls_name == ObjectType.water.name or \
+                    cls_name == ObjectType.brick.name or \
+                    cls_name == ObjectType.tombstone.name or \
+                    cls_name == ObjectType.stump.name:
+                self._list_obstacle.append((cls_name, conf, x1, y1, x2, y2))
                 pass
             elif cls_name == ObjectType.toxic_fog.name:
                 self._list_toxic_fog.append(object_one_item)
@@ -183,6 +234,9 @@ class BattleThinking:
             # 判断哪个最近
             # 如果 green_gift 的距离 <= supply_box 的距离，则优先移动到 green_gift 的位置，加装备
 
+            # 获取下一个移动 点
+            # _hero_path_finding()
+
             # 如果 视野中 有箱子 或者 绿色升级装备，则找到最近的，与 其 位置重叠，攻击箱子
 
             pass
@@ -192,7 +246,9 @@ class BattleThinking:
             # 找到 没有墙 的 方向，向此 方向 移动。
             # 3、识别自身位置。记录、更新自身位置。英雄靠近墙壁的时候，自身位置不是居中的。
             # 4、控制英雄 向 地图边界的 相反方向 移动。本例中，向左移动。向游戏窗口，用windows api输入按键 A。
-            self._process_map_boundary()
+            result_move_direction = self._process_map_boundary()
+            # 返回移动的方向和移动的距离（身位）
+            result_move_distance = 2
             pass
 
         # 返回分析结果
@@ -243,7 +299,7 @@ class BattleThinking:
         #
         # （8）当 视野中没有 敌人、箱子、绿色装备，开始[主动寻敌]，由边界向中心，顺时针或逆时针，螺旋形移动寻敌。
 
-        return ''
+        return result_move_direction, result_move_distance, result_attack_direction, result_attack_type
 
     # 处理 地图边界，如果视野中没有可攻击目标，则向地图边界反方向移动
     def _process_map_boundary(self):
@@ -253,7 +309,7 @@ class BattleThinking:
         move_to_east = True
 
         # 结果
-        flag_direction = None
+        # flag_direction = None
 
         for (cls_name, conf, x1, y1, x2, y2) in self._list_map_boundary:
 

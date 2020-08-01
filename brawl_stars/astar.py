@@ -1,4 +1,19 @@
-# https://github.com/zephirdeadline/astar_python/blob/master/astar_python/astar.py
+# fork from https://github.com/zephirdeadline/astar_python/blob/master/astar_python/astar.py
+# 不知这个 a star 代码的速度如何，暂时用这个
+import numpy as np
+from past.builtins import xrange
+
+
+def resize(array_in, shape=None):
+    if shape is None:
+        return array_in
+    m, n = shape
+    Y = np.zeros((m, n), dtype=type(array_in[0, 0]))
+    k = len(array_in)
+    p, q = k / m, k / n
+    for i in xrange(m):
+        Y[i, :] = array_in[np.int_(i * p), np.int_(np.arange(n) * q)]
+    return Y
 
 
 class Astar:
@@ -16,6 +31,7 @@ class Astar:
 
         def __repr__(self):
             return str(self.weight)
+
 
     def print(self):
         for y in self.mat:
