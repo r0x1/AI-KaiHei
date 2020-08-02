@@ -32,8 +32,8 @@ screen_column_count = int(screen_width / screen_cell_width)
 # 屏幕纵向划分 行 数量
 screen_row_count = int(screen_heigh / screen_cell_height)
 
-# 英雄最大攻击距离
-hero_attack_max_range = 450
+# 英雄最大有效攻击距离
+hero_maximum_effective_range = 450
 
 # 英雄距离敌人的安全距离
 hero_safe_distance = 600

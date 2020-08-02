@@ -7,6 +7,7 @@ import multiprocessing
 from time import sleep
 
 from brawl_stars import config
+from brawl_stars.battle_thinking import BattleThinking
 from brawl_stars.object_detection import ObjectDetection
 
 
@@ -92,6 +93,9 @@ class BattleObservationProcess:
         obj_detect = ObjectDetection(weights='..\\weights\\brawl_stars_enemy_and_teammate.pt', imgsz=1920,
                                      confidence=0.4)
 
+        # 实例化BattleThinking
+        battle_think = BattleThinking()
+
         # 判断 进程间共享变量 是否为 True
         while self.active_flag.value:
             # 将截图保存到saveBitMap中
@@ -146,6 +150,11 @@ class BattleObservationProcess:
             #     print(key)
 
             # [battle_observation]进程，调用battle_thinking功能，对物体信息list进行分析，
+            # 清空数据
+            battle_think.clear_data()
+            # 处理物体列表
+            result_move_direction, result_move_distance, result_attack_direction, result_attack_type = \
+                battle_think.process_all(objects_list=list_detect)
 
             # [battle_observation]进程，启动[hero_movement]进程，由[hero_movement]进程，调用[device_control]功能，实现移动功能。
 
