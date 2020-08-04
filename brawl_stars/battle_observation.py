@@ -8,6 +8,7 @@ from time import sleep
 
 from brawl_stars import config
 from brawl_stars.battle_thinking import BattleThinking
+from brawl_stars.hero_move import HeroMoveProcess
 from brawl_stars.object_detection import ObjectDetection
 
 
@@ -74,7 +75,7 @@ class BattleObservationProcess:
         save_bitmap.CreateCompatibleBitmap(mfc_dc, width, height)
 
         # 循环截图
-        self._loop_screen(save_dc, save_bitmap, width, height, mfc_dc)
+        self._loop_screen(save_dc, save_bitmap, width, height, mfc_dc, h_wnd)
 
         # 释放cv2
         cv2.destroyWindow(config.cv2_window_title)
@@ -88,13 +89,17 @@ class BattleObservationProcess:
         print('battle observation process terminated.')
         pass
 
-    def _loop_screen(self, save_dc, save_bitmap, width, height, mfc_dc):
+    def _loop_screen(self, save_dc, save_bitmap, width, height, mfc_dc, h_wnd):
         # 实例化ObjectDetection
         obj_detect = ObjectDetection(weights='..\\weights\\brawl_stars_enemy_and_teammate.pt', imgsz=1920,
                                      confidence=0.4)
 
         # 实例化BattleThinking
         battle_think = BattleThinking()
+
+        # 实例化HeroMoveProcess
+        hero_move_process = HeroMoveProcess(h_wnd)
+        hero_move_process.start_process()
 
         # 判断 进程间共享变量 是否为 True
         while self.active_flag.value:
@@ -157,7 +162,7 @@ class BattleObservationProcess:
                 battle_think.process_all(objects_list=list_detect)
 
             # [battle_observation]进程，启动[hero_movement]进程，由[hero_movement]进程，调用[device_control]功能，实现移动功能。
-
+            hero_move_process.refresh(move_direction=result_move_direction, move_distance=result_move_distance)
             # [battle_observation]进程，启动[hero_attack]进程，由[hero_attack]进程，调用[device_control]功能，实现攻击功能。
 
         pass
