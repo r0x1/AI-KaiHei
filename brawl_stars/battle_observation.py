@@ -163,6 +163,7 @@ class BattleObservationProcess:
 
             # [battle_observation]进程，启动[hero_movement]进程，由[hero_movement]进程，调用[device_control]功能，实现移动功能。
             hero_move_process.refresh(move_direction=result_move_direction, move_distance=result_move_distance)
+
             # [battle_observation]进程，启动[hero_attack]进程，由[hero_attack]进程，调用[device_control]功能，实现攻击功能。
 
         pass

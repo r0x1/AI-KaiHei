@@ -7,6 +7,8 @@ from brawl_stars.astar import resize, Astar
 
 # 方向，参照数字九宫键盘
 class Direction(Enum):
+    # 空
+    none = 0
     # 中心
     center = 5
     # 北
@@ -55,6 +57,8 @@ class ObjectType(Enum):
 
 # 平A/大招/道具
 class AttackType(Enum):
+    # 不攻击
+    none = 0
     # 普通攻击
     normal_attack = 51
     # 技能攻击

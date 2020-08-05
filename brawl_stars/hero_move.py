@@ -14,7 +14,7 @@ class HeroMoveProcess:
         self.active_flag = multiprocessing.Value('b', False)
         # result_move_direction, result_move_distance, result_attack_direction, result_attack_type
         # 移动方向
-        self.move_direction = multiprocessing.Value('int', Direction.center.value)
+        self.move_direction = multiprocessing.Value('int', Direction.none.value)
         # 移动距离
         self.move_distance = multiprocessing.Value('int', 0)
 
@@ -56,7 +56,7 @@ class HeroMoveProcess:
 
     def _run_hero_move(self, h_wnd):
         while self.active_flag.value:
-            if self.move_distance != 0 and self.move_direction.value != Direction.center.value:
+            if self.move_distance != 0 and self.move_direction.value != Direction.none.value:
                 sleep_sec = 1.0 * self.move_distance.value
 
                 if self.move_direction.value == Direction.north.value:
@@ -113,7 +113,7 @@ class HeroMoveProcess:
                 # 移动距离
                 self.move_distance = multiprocessing.Value('int', 0)
                 # 移动方向
-                self.move_direction = multiprocessing.Value('int', Direction.center.value)
+                self.move_direction = multiprocessing.Value('int', Direction.none.value)
             pass
         pass
 
