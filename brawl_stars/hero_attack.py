@@ -1,8 +1,7 @@
 import multiprocessing
 from time import sleep
-import win32api, win32gui, win32con
+import win32gui, win32con
 
-from brawl_stars import device_control
 from brawl_stars.battle_thinking import Direction, AttackType
 
 
