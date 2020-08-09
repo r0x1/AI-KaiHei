@@ -88,9 +88,9 @@
 
 - [battle_observation]进程，调用[战斗思考]功能，对物体信息list进行分析，
 
-- [battle_observation]进程，启动[hero_movement]进程，由[hero_movement]进程，调用[device_control]功能，实现移动功能。
+- [battle_observation]进程，启动[hero_move]进程，实现移动功能。
 
-- [battle_observation]进程，启动[hero_attack]进程，由[hero_attack]进程，调用[device_control]功能，实现攻击功能。
+- [battle_observation]进程，启动[hero_attack]进程，实现攻击功能。
 
 
 ## 移动和攻击举例 

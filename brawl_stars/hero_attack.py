@@ -1,4 +1,5 @@
 import multiprocessing
+import random
 from time import sleep
 import win32gui, win32con
 
@@ -58,7 +59,9 @@ class HeroAttackProcess:
     def _run_hero_attack(self, h_wnd):
         while self.active_flag.value:
             if self.attack_type.value != AttackType.none.value and self.attack_direction.value != Direction.none.value:
-                sleep_sec = 0.5
+                # sleep_sec = 0.5
+                sleep_sec = random.uniform(0.501, 0.609)
+
                 # 用 方向箭头 进行攻击
                 if self.attack_direction.value == Direction.north.value:
                     win32gui.PostMessage(h_wnd, win32con.WM_KEYDOWN, win32con.VK_UP, 0)
